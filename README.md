@@ -1,38 +1,31 @@
-# cipher-genius-fe
+# Cipher Genius
 
-This template should help get you started developing with Vue 3 in Vite.
+This is a web based cipher based puzzle game. You can create an account and it will track the number of ciphers you have solved in each category and the time it took to solve the cipher. If you don't want to create an account you have the option to continue as a guest as solve cipher puzzles.
 
-## Recommended IDE Setup
+![homepage image](src/assets/cipher_genius_homepage.png)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Delpoyed Site
+- Coming soon
 
-## Customize configuration
+## Back End Repo
+[Cipher Genius Back End](https://github.com/MiTOBrien/cipher_genius_be)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Technology Used
+- [Vue](https://vuejs.org/) 3.5.13 installed with Vite 6.1.0 for the front end
+- Vue Router 4.5.0
+- JavaScript
+- Cypress 14.0.3 for end to end testing
+- ESlint and Prettier extensions in VSCode
 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
+## Getting Started
+To run this locally clone this repository onto your local machine. Change directory into the cipher-genius-fe directory and run npm install to install all dependiences. To launch the front end application:
 
 ```sh
 npm run dev
 ```
+NOTE: To utilize the login functionality and other aspects of game tracking you will also need to clone down, install, and have the back end running.
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Headed Component Tests with [Cypress Component Testing](https://on.cypress.io/component)
-
-```sh
-npm run test:unit:dev # or `npm run test:unit` for headless testing
-```
+## Testing Suite
 
 ### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
 
