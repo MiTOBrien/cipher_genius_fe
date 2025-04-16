@@ -2,14 +2,28 @@
 
 <template>
   <p>What is a cipher?</p>
+  <p>A cipher is a method used for performing encryption or decryption. Essentially, it's a set of algorithms that you apply to your data (plaintext) to transform it into an unrecognizable form (ciphertext).</p>
+  <div>
+    <button>Daily Cipher Challenge</button>
+  </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+<style scoped>
+p {
+  margin: 10px;
+  color: #84ce00;
+}
+
+div {
+  margin-top: 100px;
+  text-align: center;
+}
+
+button {
+  color: #01bfff;
+  background-color: #241822;
+  font-size: 1.25rem;
+  height: 150px;
+  width: 150px;
 }
 </style>
