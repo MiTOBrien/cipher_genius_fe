@@ -2,23 +2,23 @@
 
 <template>
   <div class="login-form">
-    <input type="text" />
+    <input type="text" id="username" name="username" placeholder="username" />
     <br />
-    <label>Username</label>
+    <label for="username">Username</label>
     <br />
-    <input type="password" />
+    <input type="password" id="password" name="password" placeholder="password" />
     <br />
-    <label>Password</label>
+    <label for="password">Password</label>
     <br />
     <button>Login</button>
     <p>Login or <RouterLink to="/register">create an account</RouterLink> to track your progress</p>
-    <p>or <RouterLink to="/home">continue as guest.</RouterLink>.</p>
+    <p>or <RouterLink to="/home">continue as guest</RouterLink>.</p>
   </div>
 </template>
 
 <style scoped>
 input {
-  margin: 10px;
+  margin: 15px 10px 5px 10px;
 }
 
 button {
