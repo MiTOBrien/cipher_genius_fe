@@ -6,13 +6,29 @@
     <br />
     <label>Username</label>
     <br />
+    <input type="text" />
+    <br />
+    <label>First Name</label>
+    <br />
+    <input type="text" />
+    <br />
+    <label>Last Name</label>
+    <br />
+    <input type="email" />
+    <br />
+    <label>Email Address</label>
+    <br />
     <input type="password" />
     <br />
     <label>Password</label>
     <br />
-    <button>Login</button>
-    <p>Login or <RouterLink to="/register">create an account</RouterLink> to track your progress</p>
-    <p>or <RouterLink to="/home">continue as guest.</RouterLink>.</p>
+    <input type="password" />
+    <br />
+    <label>Confirm Password</label>
+    <br />
+    <button>Register</button>
+    <p>Go to <RouterLink to="/">login page</RouterLink></p>
+    <p>or <RouterLink to="/home">countine as a guest</RouterLink>.</p>
   </div>
 </template>
 
