@@ -1,5 +1,6 @@
 <script setup>
-import { ref, nextTick, watch } from 'vue'
+import { ref, watch } from 'vue'
+import GameNavigation from '@/components/GameNavigation.vue'
 
 let quoteToEncrypt = 'Cipher Genius'
 const encryptedText = ref([])
@@ -42,30 +43,6 @@ function getRandomShift() {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
 }
 
-function moveToNext(index, event) {
-  const value = event.target.value
-
-  if (value && index < userGuesses.value.length - 1) {
-    nextTick(() => {
-      const nextInput = inputRefs.value[index + 1]
-      if (nextInput && !nextInput.disabled) {
-        nextInput.focus()
-      }
-    })
-  }
-}
-
-function moveToPrev(index) {
-  if (!userGuesses.value[index] && index > 0) {
-    nextTick(() => {
-      const prevInput = inputRefs.value[index - 1]
-      if (prevInput && !prevInput.disabled) {
-        prevInput.focus()
-      }
-    })
-  }
-}
-
 watch(
   userGuesses,
   (guesses) => {
@@ -100,16 +77,13 @@ encryptText()
   </section>
   <section class="wrapper">
     <div class="guess-container">
-      <input
+      <GameNavigation
         v-for="(guess, index) in userGuesses"
         :key="'guess' + index"
         v-model="userGuesses[index]"
-        maxlength="1"
-        class="guess-box"
+        :index="index"
+        :registerInput="(el, index) => inputRefs.value[index] = el"
         :disabled="quoteToEncrypt[index] === ' ' || result !== null"
-        @input="moveToNext(index, $event)"
-        @keydown.backspace="moveToPrev(index, $event)"
-        ref="inputRefs"
       />
     </div>
   </section>
