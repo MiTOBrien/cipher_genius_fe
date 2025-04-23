@@ -1,28 +1,37 @@
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 
 let quoteToEncrypt = 'Cipher Genius'
 const encryptedText = ref([])
 const userGuesses = ref([])
 const inputRefs = ref([])
+const result = ref(null)
 
 function encryptText() {
   let encrypted = ''
   let shift = getRandomShift()
-  for (let i = 0; i < quoteToEncrypt.length; i++) {
-    let char = quoteToEncrypt.charCodeAt(i)
 
-    if (char >= 65 && char <= 90) {
-      // uppercase
-      char = ((((char - 65 + shift) % 26) + 26) % 26) + 65
-    } else if (char >= 97 && char <= 122) {
-      // lowercase
-      char = ((((char - 97 + shift) % 26) + 26) % 26) + 97
+  for (let i = 0; i < quoteToEncrypt.length; i++) {
+    let char = quoteToEncrypt[i]
+    let code = char.charCodeAt(0)
+
+    if (code >= 65 && code <= 90) {
+      // uppercase A-Z
+      code = ((((code - 65 + shift) % 26) + 26) % 26) + 65
+      encrypted += String.fromCharCode(code)
+    } else if (code >= 97 && code <= 122) {
+      // lowercase a-z
+      code = ((((code - 97 + shift) % 26) + 26) % 26) + 97
+      encrypted += String.fromCharCode(code)
+    } else {
+      // non-letter (e.g., space or punctuation)
+      encrypted += char
     }
-    encrypted += String.fromCharCode(char)
   }
+
   encryptedText.value = encrypted.split('')
-  userGuesses.value = encrypted.split('').map((char) => (char === ' ' ? ' ' : ''))
+  userGuesses.value = encrypted.split('').map((char) => (char === ' ' ? '' : ''))
+  result.value = null
 }
 
 function getRandomShift() {
@@ -57,6 +66,26 @@ function moveToPrev(index) {
   }
 }
 
+watch(
+  userGuesses,
+  (guesses) => {
+    const isComplete = guesses.every((char, i) => {
+      return char !== '' || encryptedText.value[i] === ' '
+    })
+
+    if (isComplete) {
+      // Normalize for comparison: remove spaces from both sides
+      const cleanedGuess = guesses.join('').replace(/\s/g, '')
+      const cleanedQuote = quoteToEncrypt.replace(/\s/g, '')
+      result.value =
+        cleanedGuess.toLowerCase() === cleanedQuote.toLowerCase() ? 'correct' : 'incorrect'
+    } else {
+      result.value = null
+    }
+  },
+  { deep: true },
+)
+
 encryptText()
 </script>
 
@@ -77,13 +106,15 @@ encryptText()
         v-model="userGuesses[index]"
         maxlength="1"
         class="guess-box"
-        :disabled="encryptedText[index] === ' '"
+        :disabled="quoteToEncrypt[index] === ' ' || result !== null"
         @input="moveToNext(index, $event)"
         @keydown.backspace="moveToPrev(index, $event)"
         ref="inputRefs"
       />
     </div>
   </section>
+  <div v-if="result === 'correct'" class="result correct">✅ Correct!</div>
+  <div v-else-if="result === 'incorrect'" class="result incorrect">❌ Try again!</div>
 </template>
 
 <style scoped>
@@ -120,5 +151,18 @@ h2 {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+}
+
+.result {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.correct {
+  color: #00c853;
+}
+.incorrect {
+  color: #d50000;
 }
 </style>
