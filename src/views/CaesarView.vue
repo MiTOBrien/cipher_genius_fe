@@ -1,37 +1,56 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import GameNavigation from '@/components/GameNavigation.vue'
+import { getQuote } from '@/components/FetchQuote'
+import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings'
 
-let quoteToEncrypt = 'Cipher Genius'
 const encryptedText = ref([])
 const userGuesses = ref([])
 const inputRefs = ref([])
 const result = ref(null)
+const quoteText = computed(() => quoteToEncrypt.value.quote || '')
+
+const quoteToEncrypt = ref({
+  quote: '',
+  // author: '',
+})
+
+const fetchQuote = async () => {
+  const result = await getQuote()
+  quoteToEncrypt.value = result
+}
+
+const startGame = async () => {
+  await fetchQuote()
+  encryptText()
+}
 
 function encryptText() {
   let encrypted = ''
   let shift = getRandomShift()
 
-  for (let i = 0; i < quoteToEncrypt.length; i++) {
-    let char = quoteToEncrypt[i]
+  const original = quoteToEncrypt.value.quote
+  const guesses = []
+
+  for (let i = 0; i < original.length; i++) {
+    let char = original[i]
     let code = char.charCodeAt(0)
 
-    if (code >= 65 && code <= 90) {
-      // uppercase A-Z
-      code = ((((code - 65 + shift) % 26) + 26) % 26) + 65
+    if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+      // it's a letter
+      let base = code >= 97 ? 97 : 65
+      code = ((((code - base + shift) % 26) + 26) % 26) + base
       encrypted += String.fromCharCode(code)
-    } else if (code >= 97 && code <= 122) {
-      // lowercase a-z
-      code = ((((code - 97 + shift) % 26) + 26) % 26) + 97
-      encrypted += String.fromCharCode(code)
+      guesses.push('') // let user guess this letter
     } else {
-      // non-letter (e.g., space or punctuation)
+      // punctuation or space — leave as is and auto-fill
       encrypted += char
+      guesses.push(char)
     }
   }
 
   encryptedText.value = encrypted.split('')
-  userGuesses.value = encrypted.split('').map((char) => (char === ' ' ? '' : ''))
+  userGuesses.value = guesses
   result.value = null
 }
 
@@ -41,6 +60,10 @@ function getRandomShift() {
   const minCeiled = Math.ceil(min)
   const maxFloored = Math.floor(max)
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
+}
+
+function isLetter(char) {
+  return /^[a-zA-Z]$/.test(char)
 }
 
 watch(
@@ -53,7 +76,7 @@ watch(
     if (isComplete) {
       // Normalize for comparison: remove spaces from both sides
       const cleanedGuess = guesses.join('').replace(/\s/g, '')
-      const cleanedQuote = quoteToEncrypt.replace(/\s/g, '')
+      const cleanedQuote = quoteToEncrypt.value.quote.replace(/\s/g, '')
       result.value =
         cleanedGuess.toLowerCase() === cleanedQuote.toLowerCase() ? 'correct' : 'incorrect'
     } else {
@@ -62,8 +85,6 @@ watch(
   },
   { deep: true },
 )
-
-encryptText()
 </script>
 
 <template>
@@ -82,13 +103,20 @@ encryptText()
         :key="'guess' + index"
         v-model="userGuesses[index]"
         :index="index"
-        :registerInput="(el, index) => inputRefs.value[index] = el"
-        :disabled="quoteToEncrypt[index] === ' ' || result !== null"
+        :registerInput="(el, index) => (inputRefs.value[index] = el)"
+        :disabled="!isLetter(quoteText[index]) || result !== null"
       />
     </div>
   </section>
-  <div v-if="result === 'correct'" class="result correct">✅ Correct!</div>
-  <div v-else-if="result === 'incorrect'" class="result incorrect">❌ Try again!</div>
+  <section class="wrapper">
+    <div v-if="result === 'correct'" class="result correct">{{ VICTORY_MESSAGE }}</div>
+    <div v-else-if="result === 'incorrect'" class="result incorrect">
+      {{ DEFEAT_MESSAGE }}
+    </div>
+  </section>
+  <section class="wrapper">
+    <button @click="startGame">Start</button>
+  </section>
 </template>
 
 <style scoped>
@@ -97,6 +125,16 @@ h2 {
   color: #84ce00;
   font-size: 2.5rem;
 }
+
+button {
+  margin: 10px;
+  height: 50px;
+  width: 100px;
+  font-size: 1.25rem;
+  color: #01bfff;
+  background-color: #241822;
+}
+
 .wrapper {
   display: flex;
   justify-content: center;
