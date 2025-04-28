@@ -1,19 +1,23 @@
 <script setup>
-import { last } from 'cypress/types/lodash'
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 
 const email = ref('')
 const username = ref('')
 const firstname = ref('')
-const lastname = ''
+const lastname = ref('')
 const password = ref('')
 const confirmpassword = ref('')
 const router = useRouter()
 
 const register = async () => {
+  if (password.value !== confirmpassword.value) {
+    alert('Passwords do not match')
+    return
+  }
+
   try {
-    const response = await fetch('http://localhost:3000/api/v1/users/sign_in', {
+    const response = await fetch('http://localhost:3000/api/v1/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -32,11 +36,11 @@ const register = async () => {
       localStorage.setItem('token', data.token)
       router.push('/home')
     } else {
-      alert(data.error || 'Login failed')
+      alert(data.error || 'Registration failed')
     }
   } catch (error) {
     console.error(error)
-    alert('An error occurred during login')
+    alert('An error occurred during registration')
   }
 }
 </script>
@@ -93,7 +97,7 @@ const register = async () => {
     <br />
     <button @click="register">Register</button>
     <p>Go to <RouterLink to="/">login page</RouterLink></p>
-    <p>or <RouterLink to="/home">countine as a guest</RouterLink>.</p>
+    <p>or <RouterLink to="/home">continue as a guest</RouterLink>.</p>
   </div>
 </template>
 
