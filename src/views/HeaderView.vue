@@ -41,7 +41,7 @@ onMounted(() => {
         <button class="nav-button" @click="logout">Logout</button>
       </template>
       <template v-else>
-        <RouterLink class="nav-link" to="/login">Login</RouterLink>
+        <RouterLink class="nav-link" to="/">Login</RouterLink>
       </template>
     </div>
   </nav>
