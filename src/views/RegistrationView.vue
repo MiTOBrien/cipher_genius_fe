@@ -1,37 +1,97 @@
-<script setup></script>
+<script setup>
+import { last } from 'cypress/types/lodash'
+import { ref } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+
+const email = ref('')
+const username = ref('')
+const firstname = ref('')
+const lastname = ''
+const password = ref('')
+const confirmpassword = ref('')
+const router = useRouter()
+
+const register = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/v1/users/sign_in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.value,
+        username: username.value,
+        password: password.value,
+        confirmpassword: confirmpassword.value,
+        firstname: firstname.value,
+        lastname: lastname.value,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      localStorage.setItem('token', data.token)
+      router.push('/home')
+    } else {
+      alert(data.error || 'Login failed')
+    }
+  } catch (error) {
+    console.error(error)
+    alert('An error occurred during login')
+  }
+}
+</script>
 
 <template>
   <div class="login-form">
-    <input type="text" id="username" name="username" placeholder="username" />
+    <input v-model="username" type="text" id="username" name="username" placeholder="username" />
     <br />
     <label for="username">Username</label>
     <br />
-    <input type="text" id="firstname" name="firstname" placeholder="first name - optional" />
+    <input
+      v-model="firstname"
+      type="text"
+      id="firstname"
+      name="firstname"
+      placeholder="first name - optional"
+    />
     <br />
     <label for="firstname">First Name</label>
     <br />
-    <input type="text" id="lastname" name="lastname" placeholder="last name - optional" />
+    <input
+      v-model="lastname"
+      type="text"
+      id="lastname"
+      name="lastname"
+      placeholder="last name - optional"
+    />
     <br />
     <label for="lastname">Last Name</label>
     <br />
-    <input type="email" id="email" name="email" placeholder="email address" />
+    <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
     <br />
     <label for="email">Email Address</label>
     <br />
-    <input type="password" id="password" name="password" placeholder="password" />
+    <input
+      v-model="password"
+      type="password"
+      id="password"
+      name="password"
+      placeholder="password"
+    />
     <br />
     <label for="password">Password</label>
     <br />
     <input
+      v-model="confirmpassword"
       type="password"
       id="confirmpassword"
       name="confirmpassword"
       placeholder="confirm password"
     />
     <br />
-    <label for="confirmpasswordfff">Confirm Password</label>
+    <label for="confirmpassword">Confirm Password</label>
     <br />
-    <button>Register</button>
+    <button @click="register">Register</button>
     <p>Go to <RouterLink to="/">login page</RouterLink></p>
     <p>or <RouterLink to="/home">countine as a guest</RouterLink>.</p>
   </div>
