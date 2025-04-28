@@ -1,16 +1,54 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const email = ref('')
+const password = ref('')
+const router = useRouter()
+
+const login = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/v1/users/sign_in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      localStorage.setItem('token', data.token)
+      router.push('/home')
+    } else {
+      alert(data.error || 'Login failed')
+    }
+  } catch (error) {
+    console.error(error)
+    alert('An error occurred during login')
+  }
+}
+</script>
 
 <template>
   <div class="login-form">
-    <input type="text" id="username" name="username" placeholder="username" />
+    <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
     <br />
-    <label for="username">Username</label>
+    <label for="email">Email Address</label>
     <br />
-    <input type="password" id="password" name="password" placeholder="password" />
+    <input
+      v-model="password"
+      type="password"
+      id="password"
+      name="password"
+      placeholder="password"
+    />
     <br />
     <label for="password">Password</label>
     <br />
-    <button>Login</button>
+    <button @click="login">Login</button>
     <p>Login or <RouterLink to="/register">create an account</RouterLink> to track your progress</p>
     <p>or <RouterLink to="/home">continue as guest</RouterLink>.</p>
   </div>
