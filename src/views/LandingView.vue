@@ -21,7 +21,13 @@ const login = async () => {
 
     if (response.ok) {
       localStorage.setItem('token', data.token)
-      router.push('/home')
+      localStorage.setItem('username', data.user.username)
+      localStorage.setItem('firstname', data.user.first_name)
+      localStorage.setItem('lastname', data.user.last_name)
+      window.dispatchEvent(new Event('login-success'))
+      setTimeout(() => {
+        router.push('/home')
+      }, 50)
     } else {
       alert(data.error || 'Login failed')
     }

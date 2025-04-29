@@ -1,9 +1,11 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 
 const headerText = ref(null)
 const router = useRouter()
+
+const username = ref(localStorage.getItem('username') || 'Profile')
 
 const isLoggedIn = computed(() => {
   return !!localStorage.getItem('token')
@@ -17,11 +19,23 @@ function changeHeader() {
 
 function logout() {
   localStorage.removeItem('token')
+  localStorage.removeItem('username')
+  username.value = 'Profile'
   router.push('/home')
+}
+
+function updateUsername() {
+  username.value = localStorage.getItem('username') || 'Profile'
 }
 
 onMounted(() => {
   setTimeout(changeHeader, 1500)
+
+  window.addEventListener('login-success', updateUsername)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('login-success', updateUsername) // Clean up
 })
 </script>
 
@@ -32,7 +46,7 @@ onMounted(() => {
       <RouterLink class="nav-link" to="/about">About Ciphers</RouterLink>
       <RouterLink class="nav-link" to="/caesar">Caesar Cipher</RouterLink>
       <template v-if="isLoggedIn">
-        <RouterLink class="nav-link" to="/profile">View Profile</RouterLink>
+        <RouterLink class="nav-link" to="/profile">{{ username }}</RouterLink>
       </template>
     </div>
 
