@@ -41,21 +41,23 @@ const login = async () => {
 
 <template>
   <div class="login-form">
-    <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
-    <br />
-    <label for="email">Email Address</label>
-    <br />
-    <input
-      v-model="password"
-      type="password"
-      id="password"
-      name="password"
-      placeholder="password"
-    />
-    <br />
-    <label for="password">Password</label>
-    <br />
-    <button @click="login">Login</button>
+    <form @submit.prevent="login">
+      <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
+      <br />
+      <label for="email">Email Address</label>
+      <br />
+      <input
+        v-model="password"
+        type="password"
+        id="password"
+        name="password"
+        placeholder="password"
+      />
+      <br />
+      <label for="password">Password</label>
+      <br />
+      <button type="submit">Login</button>
+    </form>
     <p>Login or <RouterLink to="/register">create an account</RouterLink> to track your progress</p>
     <p>or <RouterLink to="/home">continue as guest</RouterLink>.</p>
   </div>
