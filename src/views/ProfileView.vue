@@ -7,7 +7,7 @@ const firstname = ref('')
 const lastname = ref('')
 
 onMounted(() => {
-  username.value = localStorage.getItem() || ''
+  username.value = localStorage.getItem('username') || ''
   email.value = localStorage.getItem('email') || ''
   firstname.value = localStorage.getItem('first_name') || ''
   lastname.value = localStorage.getItem('last_name') || ''

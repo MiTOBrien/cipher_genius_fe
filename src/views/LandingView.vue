@@ -24,6 +24,7 @@ const login = async () => {
       localStorage.setItem('username', data.user.username)
       localStorage.setItem('firstname', data.user.first_name)
       localStorage.setItem('lastname', data.user.last_name)
+      localStorage.setItem('email', data.user.email)
       window.dispatchEvent(new Event('login-success'))
       setTimeout(() => {
         router.push('/home')
