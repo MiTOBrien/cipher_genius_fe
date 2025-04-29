@@ -27,7 +27,7 @@ const login = async () => {
       window.dispatchEvent(new Event('login-success'))
       setTimeout(() => {
         router.push('/home')
-      }, 50)
+      }, 500)
     } else {
       alert(data.error || 'Login failed')
     }
