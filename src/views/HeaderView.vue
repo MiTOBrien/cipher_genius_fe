@@ -20,6 +20,9 @@ function changeHeader() {
 function logout() {
   localStorage.removeItem('token')
   localStorage.removeItem('username')
+  localStorage.removeItem('firstname')
+  localStorage.removeItem('lastname')
+  localStorage.removeItem('email')
   username.value = 'Profile'
   router.push('/home')
 }
