@@ -47,55 +47,57 @@ const register = async () => {
 
 <template>
   <div class="login-form">
-    <input v-model="username" type="text" id="username" name="username" placeholder="username" />
-    <br />
-    <label for="username">Username</label>
-    <br />
-    <input
-      v-model="firstname"
-      type="text"
-      id="firstname"
-      name="firstname"
-      placeholder="first name - optional"
-    />
-    <br />
-    <label for="firstname">First Name</label>
-    <br />
-    <input
-      v-model="lastname"
-      type="text"
-      id="lastname"
-      name="lastname"
-      placeholder="last name - optional"
-    />
-    <br />
-    <label for="lastname">Last Name</label>
-    <br />
-    <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
-    <br />
-    <label for="email">Email Address</label>
-    <br />
-    <input
-      v-model="password"
-      type="password"
-      id="password"
-      name="password"
-      placeholder="password"
-    />
-    <br />
-    <label for="password">Password</label>
-    <br />
-    <input
-      v-model="confirmpassword"
-      type="password"
-      id="confirmpassword"
-      name="confirmpassword"
-      placeholder="confirm password"
-    />
-    <br />
-    <label for="confirmpassword">Confirm Password</label>
-    <br />
-    <button @click="register">Register</button>
+    <form @submit.prevent="register">
+      <input v-model="username" type="text" id="username" name="username" placeholder="username" />
+      <br />
+      <label for="username">Username</label>
+      <br />
+      <input
+        v-model="firstname"
+        type="text"
+        id="firstname"
+        name="firstname"
+        placeholder="first name - optional"
+      />
+      <br />
+      <label for="firstname">First Name</label>
+      <br />
+      <input
+        v-model="lastname"
+        type="text"
+        id="lastname"
+        name="lastname"
+        placeholder="last name - optional"
+      />
+      <br />
+      <label for="lastname">Last Name</label>
+      <br />
+      <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
+      <br />
+      <label for="email">Email Address</label>
+      <br />
+      <input
+        v-model="password"
+        type="password"
+        id="password"
+        name="password"
+        placeholder="password"
+      />
+      <br />
+      <label for="password">Password</label>
+      <br />
+      <input
+        v-model="confirmpassword"
+        type="password"
+        id="confirmpassword"
+        name="confirmpassword"
+        placeholder="confirm password"
+      />
+      <br />
+      <label for="confirmpassword">Confirm Password</label>
+      <br />
+      <button type="submit">Register</button>
+    </form>
     <p>Go to <RouterLink to="/">login page</RouterLink></p>
     <p>or <RouterLink to="/home">continue as a guest</RouterLink>.</p>
   </div>
