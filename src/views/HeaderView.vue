@@ -1,44 +1,29 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { onMounted, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/useUserStore'
 
 const headerText = ref(null)
 const router = useRouter()
+const userStore = useUserStore()
 
-const username = ref(localStorage.getItem('username') || 'Profile')
+const username = computed(() => userStore.username || 'Profile')
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
-const isLoggedIn = computed(() => {
-  return !!localStorage.getItem('token')
-})
-
-function changeHeader() {
+const changeHeader = () => {
   if (headerText.value) {
     headerText.value.textContent = 'Cipher Genius'
   }
 }
 
-function logout() {
-  localStorage.removeItem('token')
-  localStorage.removeItem('username')
-  localStorage.removeItem('firstname')
-  localStorage.removeItem('lastname')
-  localStorage.removeItem('email')
-  username.value = 'Profile'
+const logout = () => {
+  userStore.logout()
   router.push('/home')
-}
-
-function updateUsername() {
-  username.value = localStorage.getItem('username') || 'Profile'
 }
 
 onMounted(() => {
   setTimeout(changeHeader, 1500)
-
-  window.addEventListener('login-success', updateUsername)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('login-success', updateUsername) // Clean up
+  userStore.restoreFromLocalStorage()
 })
 </script>
 

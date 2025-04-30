@@ -1,17 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed, onMounted } from 'vue'
+import { useUserStore } from '@/stores/useUserStore'
 
-const username = ref('')
-const email = ref('')
-const firstname = ref('')
-const lastname = ref('')
+const userStore = useUserStore()
 
+// Restore data from localStorage in case the page was reloaded
 onMounted(() => {
-  username.value = localStorage.getItem('username') || ''
-  email.value = localStorage.getItem('email') || ''
-  firstname.value = localStorage.getItem('first_name') || ''
-  lastname.value = localStorage.getItem('last_name') || ''
+  userStore.restoreFromLocalStorage()
 })
+
+const username = computed(() => userStore.username)
+const email = computed(() => userStore.email)
+const firstname = computed(() => userStore.firstname)
+const lastname = computed(() => userStore.lastname)
 </script>
 
 <template>
