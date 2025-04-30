@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/useUserStore'
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
+const userStore = useUserStore()
 
 const login = async () => {
   try {
@@ -20,15 +22,15 @@ const login = async () => {
     const data = await response.json()
 
     if (response.ok) {
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('username', data.user.username)
-      localStorage.setItem('firstname', data.user.first_name)
-      localStorage.setItem('lastname', data.user.last_name)
-      localStorage.setItem('email', data.user.email)
-      window.dispatchEvent(new Event('login-success'))
-      setTimeout(() => {
-        router.push('/home')
-      }, 500)
+      userStore.setUser({
+        token: data.token,
+        username: data.user.username,
+        firstname: data.user.first_name,
+        lastname: data.user.last_name,
+        email: data.user.email
+      })
+      
+      router.push('/home')
     } else {
       alert(data.error || 'Login failed')
     }
