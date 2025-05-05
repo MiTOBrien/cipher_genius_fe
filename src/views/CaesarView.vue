@@ -112,6 +112,7 @@ watch(
     <div v-if="result === 'correct'" class="result correct">{{ VICTORY_MESSAGE }}</div>
     <div v-else-if="result === 'incorrect'" class="result incorrect">
       {{ DEFEAT_MESSAGE }}
+      <p>The quote was {{ quoteText }}</p>
     </div>
   </section>
   <section class="wrapper">
