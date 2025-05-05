@@ -4,8 +4,7 @@ import { RouterLink, useRouter } from 'vue-router'
 
 const email = ref('')
 const username = ref('')
-const firstname = ref('')
-const lastname = ref('')
+const name = ref('')
 const password = ref('')
 const confirmpassword = ref('')
 const router = useRouter()
@@ -25,8 +24,7 @@ const register = async () => {
         username: username.value,
         password: password.value,
         confirmpassword: confirmpassword.value,
-        firstname: firstname.value,
-        lastname: lastname.value,
+        name: name.value,
       }),
     })
 
@@ -48,29 +46,19 @@ const register = async () => {
 <template>
   <div class="login-form">
     <form @submit.prevent="register">
-      <input v-model="username" type="text" id="username" name="username" placeholder="username" />
+      <input
+        v-model="username"
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Username - optional"
+      />
       <br />
       <label for="username">Username</label>
       <br />
-      <input
-        v-model="firstname"
-        type="text"
-        id="firstname"
-        name="firstname"
-        placeholder="first name - optional"
-      />
+      <input v-model="name" type="text" id="name" name="name" placeholder="Name - optional" />
       <br />
-      <label for="firstname">First Name</label>
-      <br />
-      <input
-        v-model="lastname"
-        type="text"
-        id="lastname"
-        name="lastname"
-        placeholder="last name - optional"
-      />
-      <br />
-      <label for="lastname">Last Name</label>
+      <label for="name">Name</label>
       <br />
       <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
       <br />
