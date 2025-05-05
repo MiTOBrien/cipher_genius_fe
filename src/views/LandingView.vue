@@ -10,26 +10,31 @@ const userStore = useUserStore()
 
 const login = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/v1/users/sign_in', {
+    const response = await fetch('http://localhost:3001/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: email.value,
-        password: password.value,
+        user: {
+          email: email.value,
+          password: password.value,
+        },
       }),
     })
 
     const data = await response.json()
 
-    if (response.ok) {
+    const token = data.status.token
+
+    if (response.ok && token) {
       userStore.setUser({
-        token: data.token,
-        username: data.user.username,
-        firstname: data.user.first_name,
-        lastname: data.user.last_name,
-        email: data.user.email
+        token: token,
+        username: data.status.data.user.username,
+        name: data.status.data.user.name,
+        email: data.status.data.user.email,
       })
-      
+
+      localStorage.setItem('token', token)
+
       router.push('/home')
     } else {
       alert(data.error || 'Login failed')
