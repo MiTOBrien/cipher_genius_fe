@@ -2,11 +2,17 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
+import view_password_icon from '@/components/show-password-icon.png'
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const router = useRouter()
 const userStore = useUserStore()
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
 
 const login = async () => {
   try {
@@ -55,16 +61,18 @@ const login = async () => {
       <br />
       <input
         v-model="password"
-        type="password"
+        :type="showPassword ? 'text' : 'password'"
         id="password"
         name="password"
         placeholder="password"
       />
       <br />
       <label for="password">Password</label>
+      <img :src="view_password_icon" alt="Show password" @click="togglePassword" />
       <br />
       <button type="submit">Login</button>
     </form>
+
     <p>Login or <RouterLink to="/register">create an account</RouterLink> to track your progress</p>
     <p>or <RouterLink to="/home">continue as guest</RouterLink>.</p>
   </div>
@@ -73,6 +81,13 @@ const login = async () => {
 <style scoped>
 input {
   margin: 15px 10px 5px 10px;
+}
+
+img {
+  height: 25px;
+  cursor: pointer;
+  vertical-align: middle;
+  padding-left: 5px;
 }
 
 button {
