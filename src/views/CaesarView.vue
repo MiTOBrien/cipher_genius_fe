@@ -3,12 +3,15 @@ import { ref, watch, computed } from 'vue'
 import GameNavigation from '@/components/GameNavigation.vue'
 import { getQuote } from '@/components/FetchQuote'
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings'
+import GameTimer from '@/components/GameTimer.vue'
 
 const encryptedText = ref([])
 const userGuesses = ref([])
 const inputRefs = ref([])
 const result = ref(null)
 const quoteText = computed(() => quoteToEncrypt.value.quote || '')
+const isTimerRunning = ref(false)
+const resetKey = ref(0)
 
 const quoteToEncrypt = ref({
   quote: '',
@@ -23,6 +26,8 @@ const fetchQuote = async () => {
 const startGame = async () => {
   await fetchQuote()
   encryptText()
+  isTimerRunning.value = true
+  resetKey.value = Date.now()
 }
 
 function encryptText() {
@@ -85,6 +90,12 @@ watch(
   },
   { deep: true },
 )
+
+watch(result, (newVal) => {
+  if (newVal === 'correct' || newVal === 'incorrect') {
+    isTimerRunning.value = false
+  }
+})
 </script>
 
 <template>
@@ -99,16 +110,19 @@ watch(
   <section class="wrapper">
     <div class="guess-container">
       <GameNavigation
-        v-for="(guess, index) in userGuesses"
-        :key="'guess' + index"
-        v-model="userGuesses[index]"
-        :index="index"
-        :registerInput="(el, index) => (inputRefs.value[index] = el)"
-        :disabled="!isLetter(quoteText[index]) || result !== null"
+      v-for="(guess, index) in userGuesses"
+      :key="'guess' + index"
+      v-model="userGuesses[index]"
+      :index="index"
+      :registerInput="(el, index) => (inputRefs.value[index] = el)"
+      :disabled="!isLetter(quoteText[index]) || result !== null"
       />
     </div>
   </section>
   <section class="wrapper">
+    <section class="timer-wrapper">
+      <GameTimer :isRunning="isTimerRunning" :resetTrigger="resetKey" />
+    </section>
     <div v-if="result === 'correct'" class="result correct">{{ VICTORY_MESSAGE }}</div>
     <div v-else-if="result === 'incorrect'" class="result incorrect">
       {{ DEFEAT_MESSAGE }}
