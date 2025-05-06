@@ -16,15 +16,17 @@ const register = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:3000/api/v1/users', {
+    const response = await fetch('http://localhost:3001/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: email.value,
-        username: username.value,
-        password: password.value,
-        confirmpassword: confirmpassword.value,
-        name: name.value,
+        user: {
+          email: email.value,
+          username: username.value,
+          password: password.value,
+          confirmpassword: confirmpassword.value,
+          name: name.value,
+        },
       }),
     })
 
