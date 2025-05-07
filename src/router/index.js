@@ -13,7 +13,7 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/RegistrationView.vue')
+      component: () => import('../views/RegistrationView.vue'),
     },
     {
       path: '/home',
@@ -31,12 +31,17 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('../views/ProfileView.vue')
+      component: () => import('../views/ProfileView.vue'),
     },
     {
       path: '/caesar',
       name: 'caesar',
       component: () => import('../views/CaesarView.vue'),
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('../views/ForgotPasswordView.vue'),
     },
   ],
 })
