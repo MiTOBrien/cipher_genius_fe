@@ -75,6 +75,7 @@ const login = async () => {
 
     <p>Login or <RouterLink to="/register">create an account</RouterLink> to track your progress</p>
     <p>or <RouterLink to="/home">continue as guest</RouterLink>.</p>
+    <p><RouterLink to="/forgot-password">Forgot your password?</RouterLink></p>
   </div>
 </template>
 
