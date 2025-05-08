@@ -63,6 +63,12 @@ const resetPassword = async () => {
 </template>
 
 <style scoped>
+h2 {
+  text-align: center;
+  color: #84ce00;
+  font-size: 2.5rem;
+}
+
 .reset-form {
   max-width: 400px;
   margin: 0 auto;
@@ -73,6 +79,11 @@ input {
   margin: 10px auto;
 }
 button {
-  margin-top: 10px;
+  margin: 10px;
+  height: 50px;
+  width: 100px;
+  font-size: 1rem;
+  color: #01bfff;
+  background-color: #241822;
 }
 </style>
