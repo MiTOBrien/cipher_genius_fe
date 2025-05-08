@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import view_password_icon from '@/components/show-password-icon.png'
 
 const email = ref('')
 const username = ref('')
@@ -8,6 +9,16 @@ const name = ref('')
 const password = ref('')
 const confirmpassword = ref('')
 const router = useRouter()
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
+
+const toggleConfirmPassword = () => {
+  showConfirmPassword.value = !showConfirmPassword.value
+}
 
 const register = async () => {
   if (password.value !== confirmpassword.value) {
@@ -68,23 +79,25 @@ const register = async () => {
       <br />
       <input
         v-model="password"
-        type="password"
+        :type="showPassword ? 'text' : 'password'"
         id="password"
         name="password"
         placeholder="password"
       />
       <br />
       <label for="password">Password</label>
+      <img :src="view_password_icon" alt="Show password" @click="togglePassword" />
       <br />
       <input
         v-model="confirmpassword"
-        type="password"
+        :type="showConfirmPassword ? 'text' : 'password'"
         id="confirmpassword"
         name="confirmpassword"
         placeholder="confirm password"
       />
       <br />
       <label for="confirmpassword">Confirm Password</label>
+      <img :src="view_password_icon" alt="Show confirm password" @click="toggleConfirmPassword" />
       <br />
       <button type="submit">Register</button>
     </form>
@@ -96,6 +109,13 @@ const register = async () => {
 <style scoped>
 input {
   margin: 15px 10px 5px 10px;
+}
+
+img {
+  height: 25px;
+  cursor: pointer;
+  vertical-align: middle;
+  padding-left: 5px;
 }
 
 button {
