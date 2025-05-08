@@ -7,7 +7,7 @@ const headerText = ref(null)
 const router = useRouter()
 const userStore = useUserStore()
 
-const username = computed(() => userStore.username || 'Profile')
+const username = computed(() => userStore.username || userStore.name || userStore.email)
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 const changeHeader = () => {
