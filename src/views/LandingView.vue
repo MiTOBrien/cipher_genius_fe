@@ -34,6 +34,7 @@ const login = async () => {
     if (response.ok && token) {
       userStore.setUser({
         token: token,
+        id: data.status.data.user.id,
         username: data.status.data.user.username,
         name: data.status.data.user.name,
         email: data.status.data.user.email,
