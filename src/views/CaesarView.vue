@@ -1,10 +1,12 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { useUserStore } from '@/stores/useUserStore'
 import GameNavigation from '@/components/GameNavigation.vue'
 import { getQuote } from '@/components/FetchQuote'
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings'
 import GameTimer from '@/components/GameTimer.vue'
 
+const userStore = useUserStore()
 const encryptedText = ref([])
 const userGuesses = ref([])
 const inputRefs = ref([])
@@ -71,6 +73,35 @@ function isLetter(char) {
   return /^[a-zA-Z]$/.test(char)
 }
 
+async function submitGameResult() {
+  // const time = seconds.value // Make sure you're emitting this from <GameTimer>
+  const gameResult = {
+    user_cipher: {
+      user_id: userStore.id,
+      cipher_id: 1,
+      time: 95,
+      won: result.value === 'correct',
+    },
+  }
+
+  try {
+    const response = await fetch('http://localhost:3001/api/v1/user_ciphers/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userStore.token}`, // optional if your API uses auth
+      },
+      body: JSON.stringify(gameResult),
+    })
+
+    if (!response.ok) {
+      console.error('Failed to save game result')
+    }
+  } catch (error) {
+    console.error('Error sending game result:', error)
+  }
+}
+
 watch(
   userGuesses,
   (guesses) => {
@@ -94,6 +125,7 @@ watch(
 watch(result, (newVal) => {
   if (newVal === 'correct' || newVal === 'incorrect') {
     isTimerRunning.value = false
+    submitGameResult()
   }
 })
 </script>
@@ -110,12 +142,12 @@ watch(result, (newVal) => {
   <section class="wrapper">
     <div class="guess-container">
       <GameNavigation
-      v-for="(guess, index) in userGuesses"
-      :key="'guess' + index"
-      v-model="userGuesses[index]"
-      :index="index"
-      :registerInput="(el, index) => (inputRefs.value[index] = el)"
-      :disabled="!isLetter(quoteText[index]) || result !== null"
+        v-for="(guess, index) in userGuesses"
+        :key="'guess' + index"
+        v-model="userGuesses[index]"
+        :index="index"
+        :registerInput="(el, index) => (inputRefs.value[index] = el)"
+        :disabled="!isLetter(quoteText[index]) || result !== null"
       />
     </div>
   </section>

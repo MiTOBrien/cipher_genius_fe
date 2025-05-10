@@ -16,8 +16,6 @@ const updateProfile = async () => {
   }
 
   try {
-    console.log('name', userStore.name)
-    console.log('username', userStore.username)
     const response = await fetch('http://localhost:3001/api/v1/users/update', {
       method: 'PUT',
       headers: {
