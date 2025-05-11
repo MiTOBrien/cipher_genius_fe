@@ -14,10 +14,11 @@ const result = ref(null)
 const quoteText = computed(() => quoteToEncrypt.value.quote || '')
 const isTimerRunning = ref(false)
 const resetKey = ref(0)
+const elapsedSeconds = ref(0)
 
 const quoteToEncrypt = ref({
   quote: '',
-  // author: '',
+  // author: '', May add later.
 })
 
 const fetchQuote = async () => {
@@ -73,13 +74,16 @@ function isLetter(char) {
   return /^[a-zA-Z]$/.test(char)
 }
 
+function handleSecondsUpdate(val) {
+  elapsedSeconds.value = val
+}
+
 async function submitGameResult() {
-  // const time = seconds.value // Make sure you're emitting this from <GameTimer>
   const gameResult = {
     user_cipher: {
       user_id: userStore.id,
       cipher_id: 1,
-      time: 95,
+      time: elapsedSeconds.value,
       won: result.value === 'correct',
     },
   }
@@ -153,7 +157,11 @@ watch(result, (newVal) => {
   </section>
   <section class="wrapper">
     <section class="timer-wrapper">
-      <GameTimer :isRunning="isTimerRunning" :resetTrigger="resetKey" />
+      <GameTimer
+        :isRunning="isTimerRunning"
+        :resetTrigger="resetKey"
+        @update:seconds="handleSecondsUpdate"
+      />
     </section>
     <div v-if="result === 'correct'" class="result correct">{{ VICTORY_MESSAGE }}</div>
     <div v-else-if="result === 'incorrect'" class="result incorrect">
