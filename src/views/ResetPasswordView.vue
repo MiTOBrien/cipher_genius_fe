@@ -37,7 +37,7 @@ const resetPassword = async () => {
 
     if (response.ok) {
       success.value = 'Password reset successful! Redirecting to login...'
-      setTimeout(() => router.push('/login'), 2000)
+      setTimeout(() => router.push('/'), 2000)
     } else {
       error.value = data.error || 'Reset failed'
     }

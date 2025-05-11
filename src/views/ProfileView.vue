@@ -67,6 +67,8 @@ const updateProfile = async () => {
   </div>
 
   <button @click="updateProfile">Update Profile</button>
+
+  <RouterLink to="/reset-password">Reset Password</RouterLink>
 </template>
 
 <style scoped>
