@@ -89,7 +89,7 @@ async function submitGameResult() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userStore.token}`, // optional if your API uses auth
+        Authorization: `Bearer ${userStore.token}`,
       },
       body: JSON.stringify(gameResult),
     })

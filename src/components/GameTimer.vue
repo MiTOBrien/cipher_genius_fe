@@ -1,8 +1,3 @@
-<!-- src/components/Timer.vue -->
-<template>
-  <div class="timer">{{ formattedTime }}</div>
-</template>
-
 <script setup>
 import { ref, computed, watch, onUnmounted } from 'vue'
 
@@ -11,6 +6,7 @@ const props = defineProps({
   resetTrigger: Number, // force reset on change (can be a timestamp)
 })
 
+const emit = defineEmits(['update:seconds'])
 const seconds = ref(0)
 let intervalId = null
 
@@ -26,6 +22,7 @@ watch(
     if (running) {
       intervalId = setInterval(() => {
         seconds.value++
+        emit('update:seconds', seconds.value)
       }, 1000)
     } else {
       clearInterval(intervalId)
@@ -43,6 +40,10 @@ watch(
 
 onUnmounted(() => clearInterval(intervalId))
 </script>
+
+<template>
+  <div class="timer">{{ formattedTime }}</div>
+</template>
 
 <style scoped>
 .timer {
