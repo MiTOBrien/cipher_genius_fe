@@ -147,4 +147,20 @@ button {
   border: none;
   cursor: pointer;
 }
+
+table, th, td {
+  border: 1px solid black;
+}
+
+table {
+  margin: auto;
+  width: 25%;
+}
+
+th {
+  color: #84ce00;
+}
+td {
+  color: #01bfff;
+}
 </style>
