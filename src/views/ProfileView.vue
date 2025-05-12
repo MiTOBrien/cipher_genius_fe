@@ -78,23 +78,25 @@ function formatTime(seconds) {
 <template>
   <h2>User Profile</h2>
 
-  <div class="profile-field">
-    <label for="username">Username:</label>
-    <input type="text" v-model="userStore.username" id="username" name="username" size="25" />
-  </div>
+  <form @submit.prevent="updateProfile">
+    <div class="profile-field">
+      <label for="username">Username:</label>
+      <input type="text" v-model="userStore.username" id="username" name="username" size="25" />
+    </div>
 
-  <div class="profile-field">
-    <label for="name">Name:</label>
-    <input type="text" v-model="userStore.name" id="name" name="name" size="25" />
-  </div>
+    <div class="profile-field">
+      <label for="name">Name:</label>
+      <input type="text" v-model="userStore.name" id="name" name="name" size="25" />
+    </div>
 
-  <div class="profile-field">
-    <label>Email Address:</label>
-    <input type="email" v-model="userStore.email" size="25" disabled />
-  </div>
-
-  <button @click="updateProfile">Update Profile</button>
-
+    <div class="profile-field">
+      <label>Email:</label>
+      <input type="email" v-model="userStore.email" size="25" disabled />
+    </div>
+    <div class="button-wrapper">
+      <button @click="updateProfile">Update Profile</button>
+    </div>
+  </form>
   <RouterLink to="/cnange-password">Change Password</RouterLink>
   <h3>Your Cipher Stats</h3>
   <table>
@@ -129,10 +131,28 @@ h3 {
 }
 
 .profile-field {
-  margin: 10px;
+  display: flex;
+  align-items: center;
+  margin: 10px auto;
   color: #84ce00;
+  width: 300px;
 }
 
+.profile-field label {
+  width: 120px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.profile-field input {
+  flex: 1;
+  padding: 4px;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
 input {
   margin-left: 10px;
   padding: 4px;
@@ -148,7 +168,9 @@ button {
   cursor: pointer;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid black;
 }
 
