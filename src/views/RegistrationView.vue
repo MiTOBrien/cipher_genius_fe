@@ -45,7 +45,7 @@ const register = async () => {
 
     if (response.ok) {
       localStorage.setItem('token', data.token)
-      router.push('/home')
+      router.push('/')
     } else {
       alert(data.error || 'Registration failed')
     }

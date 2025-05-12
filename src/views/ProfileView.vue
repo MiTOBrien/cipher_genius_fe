@@ -107,7 +107,7 @@ function formatTime(seconds) {
     </thead>
     <tbody>
       <tr v-for="(stat, index) in cipherStats" :key="index">
-        <td>{{ stat.cipher.name }}</td>
+        <td>{{ stat.cipher.cipher }}</td>
         <td>{{ formatTime(stat.time) }}</td>
         <td>{{ stat.won ? 'Yes' : 'No' }}</td>
       </tr>
