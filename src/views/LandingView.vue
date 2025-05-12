@@ -77,7 +77,12 @@ const login = async () => {
       />
       <br />
       <label for="password">Password</label>
-      <img :src="view_password_icon" alt="Show password" @click="togglePassword" />
+      <img
+        :src="view_password_icon"
+        alt="Show password"
+        title="Show/Hide Password"
+        @click="togglePassword"
+      />
       <br />
       <button type="submit">Login</button>
     </form>

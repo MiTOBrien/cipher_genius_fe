@@ -102,7 +102,12 @@ const register = async () => {
       />
       <br />
       <label for="password">Password</label>
-      <img :src="view_password_icon" alt="Show password" @click="togglePassword" />
+      <img
+        :src="view_password_icon"
+        alt="Show password"
+        title="Show/Hide Password"
+        @click="togglePassword"
+      />
       <br />
       <input
         v-model="confirmpassword"
@@ -114,7 +119,12 @@ const register = async () => {
       />
       <br />
       <label for="confirmpassword">Confirm Password</label>
-      <img :src="view_password_icon" alt="Show confirm password" @click="toggleConfirmPassword" />
+      <img
+        :src="view_password_icon"
+        alt="Show confirm password"
+        title="Show/Hide Password"
+        @click="toggleConfirmPassword"
+      />
       <br />
       <button type="submit">Register</button>
     </form>
