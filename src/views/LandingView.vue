@@ -56,7 +56,14 @@ const login = async () => {
 <template>
   <div class="login-form">
     <form @submit.prevent="login">
-      <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
+      <input
+        v-model="email"
+        type="email"
+        id="email"
+        name="email"
+        placeholder="email address"
+        size="25"
+      />
       <br />
       <label for="email">Email Address</label>
       <br />
@@ -66,6 +73,7 @@ const login = async () => {
         id="password"
         name="password"
         placeholder="password"
+        size="25"
       />
       <br />
       <label for="password">Password</label>

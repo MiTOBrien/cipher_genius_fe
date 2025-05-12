@@ -65,15 +65,30 @@ const register = async () => {
         id="username"
         name="username"
         placeholder="Username - optional"
+        size="25"
       />
       <br />
       <label for="username">Username</label>
       <br />
-      <input v-model="name" type="text" id="name" name="name" placeholder="Name - optional" />
+      <input
+        v-model="name"
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Name - optional"
+        size="25"
+      />
       <br />
       <label for="name">Name</label>
       <br />
-      <input v-model="email" type="email" id="email" name="email" placeholder="email address" />
+      <input
+        v-model="email"
+        type="email"
+        id="email"
+        name="email"
+        placeholder="email address"
+        size="25"
+      />
       <br />
       <label for="email">Email Address</label>
       <br />
@@ -83,6 +98,7 @@ const register = async () => {
         id="password"
         name="password"
         placeholder="password"
+        size="25"
       />
       <br />
       <label for="password">Password</label>
@@ -94,6 +110,7 @@ const register = async () => {
         id="confirmpassword"
         name="confirmpassword"
         placeholder="confirm password"
+        size="25"
       />
       <br />
       <label for="confirmpassword">Confirm Password</label>
