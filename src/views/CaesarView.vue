@@ -82,7 +82,7 @@ async function submitGameResult() {
   const gameResult = {
     user_cipher: {
       user_id: userStore.id,
-      cipher_id: 1,
+      cipher_id: 2,
       time: elapsedSeconds.value,
       won: result.value === 'correct',
     },
