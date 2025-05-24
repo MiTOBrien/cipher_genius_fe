@@ -5,6 +5,13 @@ import { useUserStore } from '@/stores/useUserStore'
 const userStore = useUserStore()
 const cipherStats = ref([])
 
+// Password change state
+const showPasswordSection = ref(false)
+const currentPassword = ref('')
+const newPassword = ref('')
+const confirmPassword = ref('')
+const passwordErrors = ref([])
+
 onMounted(() => {
   userStore.restoreFromLocalStorage()
   fetchCipherStats()
@@ -49,6 +56,82 @@ const updateProfile = async () => {
   }
 }
 
+const validatePassword = () => {
+  passwordErrors.value = []
+
+  if (!currentPassword.value) {
+    passwordErrors.value.push('Current password is required')
+  }
+
+  if (!newPassword.value) {
+    passwordErrors.value.push('New password is required')
+  } else if (newPassword.value.length < 8) {
+    passwordErrors.value.push('New password must be at least 6 characters')
+  }
+
+  if (newPassword.value !== confirmPassword.value) {
+    passwordErrors.value.push('Password confirmation does not match')
+  }
+
+  return passwordErrors.value.length === 0
+}
+
+const changePassword = async () => {
+  if (!validatePassword()) {
+    return
+  }
+
+  const token = localStorage.getItem('token')
+  if (!token) {
+    alert('Not logged in')
+    return
+  }
+
+  try {
+    const response = await fetch('http://localhost:3001/api/v1/users/change-password', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        current_password: currentPassword.value,
+        new_password: newPassword.value,
+        new_password_confirmation: confirmPassword.value,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      alert('Password changed successfully!')
+      // Clear the form
+      currentPassword.value = ''
+      newPassword.value = ''
+      confirmPassword.value = ''
+      showPasswordSection.value = false
+      passwordErrors.value = []
+    } else {
+      passwordErrors.value = [data.error || 'Password change failed']
+    }
+  } catch (err) {
+    console.error(err)
+    passwordErrors.value = ['An error occurred while changing password']
+  }
+}
+
+const togglePasswordSection = () => {
+  showPasswordSection.value = !showPasswordSection.value
+  if (!showPasswordSection.value) {
+    // Clear form when hiding
+    currentPassword.value = ''
+    newPassword.value = ''
+    confirmPassword.value = ''
+    passwordErrors.value = []
+  }
+}
+
 const fetchCipherStats = async () => {
   const token = localStorage.getItem('token')
   if (!token) return
@@ -78,6 +161,7 @@ function formatTime(seconds) {
 <template>
   <h2>User Profile</h2>
 
+  <!-- Profile Update Form -->
   <form @submit.prevent="updateProfile">
     <div class="profile-field">
       <label for="username">Username:</label>
@@ -94,10 +178,70 @@ function formatTime(seconds) {
       <input type="email" v-model="userStore.email" size="25" disabled />
     </div>
     <div class="button-wrapper">
-      <button @click="updateProfile">Update Profile</button>
+      <button type="submit">Update Profile</button>
     </div>
   </form>
-  <RouterLink to="/cnange-password">Change Password</RouterLink>
+
+  <!-- Password Change Section -->
+  <div class="password-section">
+    <div class="button-wrapper">
+      <button type="button" @click="togglePasswordSection" class="toggle-password-btn">
+        {{ showPasswordSection ? 'Cancel Password Change' : 'Change Password' }}
+      </button>
+    </div>
+
+    <div v-if="showPasswordSection" class="password-form">
+      <h3>Change Password</h3>
+
+      <!-- Error Messages -->
+      <div v-if="passwordErrors.length > 0" class="error-messages">
+        <ul>
+          <li v-for="error in passwordErrors" :key="error" class="error">{{ error }}</li>
+        </ul>
+      </div>
+
+      <form @submit.prevent="changePassword">
+        <div class="profile-field">
+          <label for="current-password">Current Password:</label>
+          <input
+            type="password"
+            v-model="currentPassword"
+            id="current-password"
+            size="25"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <div class="profile-field">
+          <label for="new-password">New Password:</label>
+          <input
+            type="password"
+            v-model="newPassword"
+            id="new-password"
+            size="25"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <div class="profile-field">
+          <label for="confirm-password">Confirm Password:</label>
+          <input
+            type="password"
+            v-model="confirmPassword"
+            id="confirm-password"
+            size="25"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <div class="button-wrapper">
+          <button type="submit">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cipher Stats -->
   <h3>Your Cipher Stats</h3>
   <table>
     <thead>
@@ -153,6 +297,42 @@ h3 {
   display: flex;
   justify-content: center;
 }
+
+.password-section {
+  margin: 30px 0;
+  padding: 20px;
+  border-top: 1px solid #ccc;
+}
+
+.password-form {
+  margin-top: 20px;
+}
+
+.toggle-password-btn {
+  background-color: #84ce00;
+  color: #241822;
+}
+
+.toggle-password-btn:hover {
+  background-color: #6ba800;
+}
+
+.error-messages {
+  margin: 10px auto;
+  width: 300px;
+}
+
+.error-messages ul {
+  list-style: none;
+  padding: 0;
+}
+
+.error {
+  color: #ff4444;
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
 input {
   margin-left: 10px;
   padding: 4px;
@@ -166,6 +346,10 @@ button {
   color: #01bfff;
   border: none;
   cursor: pointer;
+}
+
+button:hover {
+  background-color: #3a2832;
 }
 
 table,
