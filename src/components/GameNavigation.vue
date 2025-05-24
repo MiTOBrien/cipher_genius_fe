@@ -1,11 +1,12 @@
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue'
+import { ref, watch, nextTick, onMounted, inject } from 'vue'
 
 const props = defineProps({
   modelValue: String,
-  index: Number,
+  index: Number, // Index within the word (optional now)
+  flatIndex: Number, // ✅ Global flat index (required)
   disabled: Boolean,
-  inputRefs: Object,
+  registerInput: Function, // ✅ Must be passed from parent
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -26,28 +27,32 @@ function handleInput(event) {
 
   if (localValue.value) {
     nextTick(() => {
-      const next = document.querySelector(`[data-index='${props.index + 1}']`)
-      if (next && !next.disabled) {
-        next.focus()
+      const nextInput = inputRefs.value[props.flatIndex + 1]
+      if (nextInput && !nextInput.disabled) {
+        nextInput.focus()
       }
     })
   }
 }
 
-function handleBackspace(e) {
-  if (!localValue.value && props.index > 0) {
+function handleBackspace() {
+  if (!localValue.value && props.flatIndex > 0) {
     nextTick(() => {
-      const prev = document.querySelector(`[data-index='${props.index - 1}']`)
-      if (prev && !prev.disabled) {
-        prev.focus()
+      const prevInput = inputRefs.value[props.flatIndex - 1]
+      if (prevInput && !prevInput.disabled) {
+        prevInput.focus()
       }
     })
   }
 }
+
+// Global list shared from parent component
+const inputRefs = inject('inputRefs')
 
 onMounted(() => {
   if (input.value && props.registerInput) {
-    props.registerInput(input.value, props.index)
+    // Call registerInput with just the input element
+    props.registerInput(input.value)
   }
 })
 </script>
@@ -55,7 +60,7 @@ onMounted(() => {
 <template>
   <input
     ref="input"
-    :data-index="index"
+    :data-index="flatIndex"
     v-model="localValue"
     :maxlength="1"
     :disabled="disabled"
