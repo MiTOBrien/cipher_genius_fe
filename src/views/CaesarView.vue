@@ -28,6 +28,10 @@ const fetchQuote = async () => {
 }
 
 const startGame = async () => {
+  // Reset timer first (before new game starts)
+  isTimerRunning.value = false
+  resetKey.value = Date.now()
+
   await fetchQuote()
   encryptText()
 
@@ -35,8 +39,9 @@ const startGame = async () => {
   const totalChars = encryptedText.value.flat().length
   inputRefs.value = new Array(totalChars).fill(null)
 
+  // Start timer after everything is set up
   isTimerRunning.value = true
-  resetKey.value = Date.now()
+  console.log('Set isTimerRunning to:', isTimerRunning.value)
 }
 
 function encryptText() {
@@ -168,7 +173,6 @@ watch(
 watch(result, (newVal) => {
   if (newVal === 'correct' || newVal === 'incorrect') {
     isTimerRunning.value = false
-    resetKey.value = Date.now()
     submitGameResult()
   }
 })
@@ -216,7 +220,6 @@ watch(result, (newVal) => {
   <section class="wrapper">
     <section class="timer-wrapper">
       <GameTimer
-        :key="`timer-${resetKey}`"
         :isRunning="isTimerRunning"
         :resetTrigger="resetKey"
         @update:seconds="handleSecondsUpdate"
