@@ -36,7 +36,6 @@ const startGame = async () => {
   inputRefs.value = new Array(totalChars).fill(null)
 
   isTimerRunning.value = true
-  console.log('Set isTimerRunning to:', isTimerRunning.value)
   resetKey.value = Date.now()
 }
 
@@ -169,6 +168,7 @@ watch(
 watch(result, (newVal) => {
   if (newVal === 'correct' || newVal === 'incorrect') {
     isTimerRunning.value = false
+    resetKey.value = Date.now()
     submitGameResult()
   }
 })
@@ -216,6 +216,7 @@ watch(result, (newVal) => {
   <section class="wrapper">
     <section class="timer-wrapper">
       <GameTimer
+        :key="`timer-${resetKey}`"
         :isRunning="isTimerRunning"
         :resetTrigger="resetKey"
         @update:seconds="handleSecondsUpdate"
