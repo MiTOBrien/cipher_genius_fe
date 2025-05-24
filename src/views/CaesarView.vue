@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, provide } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import GameNavigation from '@/components/GameNavigation.vue'
 import { getQuote } from '@/components/FetchQuote'
@@ -9,12 +9,13 @@ import GameTimer from '@/components/GameTimer.vue'
 const userStore = useUserStore()
 const encryptedText = ref([])
 const userGuesses = ref([])
-const inputRefs = ref([])
 const result = ref(null)
 const quoteText = computed(() => quoteToEncrypt.value.quote || '')
 const isTimerRunning = ref(false)
 const resetKey = ref(0)
 const elapsedSeconds = ref(0)
+const inputRefs = ref([])
+provide('inputRefs', inputRefs)
 
 const quoteToEncrypt = ref({
   quote: '',
@@ -29,35 +30,48 @@ const fetchQuote = async () => {
 const startGame = async () => {
   await fetchQuote()
   encryptText()
+
+  // Initialize inputRefs array immediately after encryption
+  const totalChars = encryptedText.value.flat().length
+  inputRefs.value = new Array(totalChars).fill(null)
+
   isTimerRunning.value = true
+  console.log('Set isTimerRunning to:', isTimerRunning.value)
   resetKey.value = Date.now()
 }
 
 function encryptText() {
-  let encrypted = ''
-  let shift = getRandomShift()
-
   const original = quoteToEncrypt.value.quote
+  const splitWordsAndSpaces = original.split(/(\s+)/) // keeps spaces
+
+  const encrypted = []
   const guesses = []
 
-  for (let i = 0; i < original.length; i++) {
-    let char = original[i]
-    let code = char.charCodeAt(0)
+  let shift = getRandomShift()
 
-    if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
-      // it's a letter
-      let base = code >= 97 ? 97 : 65
-      code = ((((code - base + shift) % 26) + 26) % 26) + base
-      encrypted += String.fromCharCode(code)
-      guesses.push('') // let user guess this letter
-    } else {
-      // punctuation or space — leave as is and auto-fill
-      encrypted += char
-      guesses.push(char)
+  for (const segment of splitWordsAndSpaces) {
+    const encryptedWord = []
+    const guessWord = []
+
+    for (const char of segment) {
+      const code = char.charCodeAt(0)
+
+      if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+        const base = code >= 97 ? 97 : 65
+        const encryptedChar = String.fromCharCode(((((code - base + shift) % 26) + 26) % 26) + base)
+        encryptedWord.push(encryptedChar)
+        guessWord.push('')
+      } else {
+        encryptedWord.push(char)
+        guessWord.push(char)
+      }
     }
+
+    encrypted.push(encryptedWord)
+    guesses.push(guessWord)
   }
 
-  encryptedText.value = encrypted.split('')
+  encryptedText.value = encrypted
   userGuesses.value = guesses
   result.value = null
 }
@@ -72,6 +86,30 @@ function getRandomShift() {
 
 function isLetter(char) {
   return /^[a-zA-Z]$/.test(char)
+}
+
+function getFlatIndex(wordIndex, charIndex) {
+  let index = 0
+  for (let i = 0; i < wordIndex; i++) {
+    index += userGuesses.value[i].length
+  }
+  index += charIndex
+  return index
+}
+
+// Safe registerInput function with error checking
+function registerInput(el, wordIndex, charIndex) {
+  const flatIndex = getFlatIndex(wordIndex, charIndex)
+
+  // Ensure the array exists and has the right size
+  if (!inputRefs.value || inputRefs.value.length <= flatIndex) {
+    console.warn('InputRefs array not properly initialized for index:', flatIndex)
+    return
+  }
+
+  if (el) {
+    inputRefs.value[flatIndex] = el
+  }
 }
 
 function handleSecondsUpdate(val) {
@@ -109,13 +147,15 @@ async function submitGameResult() {
 watch(
   userGuesses,
   (guesses) => {
-    const isComplete = guesses.every((char, i) => {
-      return char !== '' || encryptedText.value[i] === ' '
+    const flatGuesses = guesses.flat()
+    const flatEncrypted = encryptedText.value.flat()
+
+    const isComplete = flatGuesses.every((char, i) => {
+      return char !== '' || flatEncrypted[i] === ' '
     })
 
     if (isComplete) {
-      // Normalize for comparison: remove spaces from both sides
-      const cleanedGuess = guesses.join('').replace(/\s/g, '')
+      const cleanedGuess = flatGuesses.join('').replace(/\s/g, '')
       const cleanedQuote = quoteToEncrypt.value.quote.replace(/\s/g, '')
       result.value =
         cleanedGuess.toLowerCase() === cleanedQuote.toLowerCase() ? 'correct' : 'incorrect'
@@ -135,26 +175,44 @@ watch(result, (newVal) => {
 </script>
 
 <template>
-  <h2 ref="headerText">Caesar Ciper</h2>
+  <h2 ref="headerText">Caesar Cipher</h2>
+
   <section class="wrapper">
+    <!-- Encrypted Text Display -->
     <div class="caesar-container">
-      <span v-for="(char, index) in encryptedText" :key="index" class="char-box">
-        {{ char }}
+      <span v-for="(word, wordIndex) in encryptedText" :key="'word' + wordIndex" class="word-box">
+        <span
+          v-for="(char, charIndex) in word"
+          :key="`char-${wordIndex}-${charIndex}`"
+          class="char-box"
+        >
+          {{ char }}
+        </span>
       </span>
     </div>
   </section>
+
   <section class="wrapper">
+    <!-- Guess Input Boxes -->
     <div class="guess-container">
-      <GameNavigation
-        v-for="(guess, index) in userGuesses"
-        :key="'guess' + index"
-        v-model="userGuesses[index]"
-        :index="index"
-        :registerInput="(el, index) => (inputRefs.value[index] = el)"
-        :disabled="!isLetter(quoteText[index]) || result !== null"
-      />
+      <span
+        v-for="(word, wordIndex) in userGuesses"
+        :key="'guess-word' + wordIndex"
+        class="word-box"
+      >
+        <GameNavigation
+          v-for="(guess, charIndex) in word"
+          :key="`guess-${wordIndex}-${charIndex}`"
+          v-model="userGuesses[wordIndex][charIndex]"
+          :index="charIndex"
+          :flatIndex="getFlatIndex(wordIndex, charIndex)"
+          :registerInput="(el) => registerInput(el, wordIndex, charIndex)"
+          :disabled="!isLetter(quoteText[getFlatIndex(wordIndex, charIndex)]) || result !== null"
+        />
+      </span>
     </div>
   </section>
+
   <section class="wrapper">
     <section class="timer-wrapper">
       <GameTimer
@@ -169,7 +227,9 @@ watch(result, (newVal) => {
       <p>The quote was {{ quoteText }}</p>
     </div>
   </section>
+
   <section class="wrapper">
+    <!-- Start Button -->
     <button @click="startGame">Start</button>
   </section>
 </template>
@@ -202,6 +262,11 @@ button {
   flex-wrap: wrap;
   margin-top: 1rem;
   justify-content: center;
+}
+
+.word-box {
+  display: inline-flex;
+  flex-wrap: nowrap;
 }
 
 .char-box,

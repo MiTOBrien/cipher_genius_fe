@@ -28,6 +28,7 @@ watch(
       clearInterval(intervalId)
     }
   },
+  { immediate: true },
 )
 
 watch(
@@ -35,6 +36,15 @@ watch(
   () => {
     seconds.value = 0
     clearInterval(intervalId)
+    intervalId = null
+
+    // If the timer should be running after reset, restart it
+    if (props.isRunning) {
+      intervalId = setInterval(() => {
+        seconds.value++
+        emit('update:seconds', seconds.value)
+      }, 1000)
+    }
   },
 )
 
