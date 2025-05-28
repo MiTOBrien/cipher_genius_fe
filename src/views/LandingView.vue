@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import view_password_icon from '@/components/show-password-icon.png'
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -16,7 +17,7 @@ const togglePassword = () => {
 
 const login = async () => {
   try {
-    const response = await fetch('http://localhost:3001/login', {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

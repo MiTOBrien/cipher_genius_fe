@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import view_password_icon from '@/components/show-password-icon.png'
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
 const email = ref('')
 const username = ref('')
 const name = ref('')
@@ -27,7 +28,7 @@ const register = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:3001/signup', {
+    const response = await fetch(`${API_BASE_URL}/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -6,6 +6,7 @@ import { getQuote } from '@/components/FetchQuote'
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings'
 import GameTimer from '@/components/GameTimer.vue'
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
 const userStore = useUserStore()
 const encryptedText = ref([])
 const userGuesses = ref([])
@@ -131,7 +132,7 @@ async function submitGameResult() {
   }
 
   try {
-    const response = await fetch('http://localhost:3001/api/v1/user_ciphers/create', {
+    const response = await fetch(`${API_BASE_URL}/api/v1/user_ciphers/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

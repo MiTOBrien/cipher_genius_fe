@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
 const userStore = useUserStore()
 const cipherStats = ref([])
 
@@ -25,7 +26,7 @@ const updateProfile = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:3001/api/v1/users/update', {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/update`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -88,7 +89,7 @@ const changePassword = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:3001/api/v1/users/change-password', {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/change-password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -137,7 +138,7 @@ const fetchCipherStats = async () => {
   if (!token) return
 
   try {
-    const response = await fetch('http://localhost:3001/api/v1/user_ciphers', {
+    const response = await fetch(`${API_BASE_URL}/api/v1/user_ciphers`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
