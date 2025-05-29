@@ -6,6 +6,8 @@
       the early 20th century that more complex mechanical and electromechanical machines such as the
       Enigma rotor machine were invented and advanced crytography as we know it.
     </p>
+    <h3 class="heading">Atbash Cipher</h3>
+    <p> The Atbash cipher is a simple substitution cipher that was originally used for the Hebrew alphabet. It works by replacing each letter with its counterpart from the opposite end of the alphabet. A becomes Z, B becomes Y, C becomes, X, etc.</p>
     <h3 class="heading">Caesar Cipher</h3>
     <p>
       The Caesar cipher is a simple substitution cipher where letters are shifted and subsituted to
