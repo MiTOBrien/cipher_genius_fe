@@ -34,6 +34,11 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue'),
     },
     {
+      path: '/atbash',
+      name: 'atbash',
+      component: () => import('../views/AtbashView.vue'),
+    },
+    {
       path: '/caesar',
       name: 'caesar',
       component: () => import('../views/CaesarView.vue'),

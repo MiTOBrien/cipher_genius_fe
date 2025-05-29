@@ -5,6 +5,7 @@
   <p>A cipher is a method used for performing encryption or decryption. Essentially, it's a set of algorithms that you apply to your data (plaintext) to transform it into an unrecognizable form (ciphertext).</p>
   <div>
     <button>Daily Cipher Challenge</button>
+    <p>The Daily Cipher challenge will be coming soon. In the meantime choose the Ciphers option on the NavBar to try your hand at one of our ciphers.</p>
   </div>
 </template>
 
