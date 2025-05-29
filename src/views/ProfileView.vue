@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 
 const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
@@ -16,6 +16,19 @@ const passwordErrors = ref([])
 onMounted(() => {
   userStore.restoreFromLocalStorage()
   fetchCipherStats()
+})
+
+const totalAttempted = computed(() => {
+  return cipherStats.value.length
+})
+
+const totalSolved = computed(() => {
+  return cipherStats.value.filter((stat) => stat.won).length
+})
+
+const successPercentage = computed(() => {
+  if (totalAttempted.value === 0) return 0
+  return Math.round((totalSolved.value / totalAttempted.value) * 100)
 })
 
 const updateProfile = async () => {
@@ -244,12 +257,18 @@ function formatTime(seconds) {
 
   <!-- Cipher Stats -->
   <h3>Your Cipher Stats</h3>
-  <table>
+  <p>
+    You have attempted {{ totalAttempted }} cipher{{ totalAttempted !== 1 ? 's' : '' }} and solved
+    {{ totalSolved }} cipher{{ totalSolved !== 1 ? 's' : '' }}.
+
+    <br />You have solved {{ successPercentage }}% of the ciphers you attempted.
+  </p>
+  <table v-if="cipherStats.length > 0">
     <thead>
       <tr>
         <th>Cipher</th>
         <th>Time</th>
-        <th>Won</th>
+        <th>Solved</th>
       </tr>
     </thead>
     <tbody>
@@ -260,9 +279,17 @@ function formatTime(seconds) {
       </tr>
     </tbody>
   </table>
+  <div v-else class="no-stats">
+    <p>No cipher attempts yet. Start solving some ciphers to see your stats!</p>
+  </div>
 </template>
 
 <style scoped>
+p {
+  text-align: center;
+  color: #84ce00;
+}
+
 h2 {
   text-align: center;
   color: #84ce00;
