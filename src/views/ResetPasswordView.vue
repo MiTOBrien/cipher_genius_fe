@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
 const route = useRoute()
 const router = useRouter()
 const token = ref('')
@@ -21,7 +22,7 @@ const resetPassword = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:3001/password', {
+    const response = await fetch(`${API_BASE_URL}/password`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
