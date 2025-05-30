@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
 const email = ref('')
 const success = ref(null)
 const error = ref(null)
@@ -10,7 +11,7 @@ const submit = async () => {
   error.value = null
 
   try {
-    const response = await fetch('http://localhost:3001/api/v1/password/forgot', {
+    const response = await fetch(`${API_BASE_URL}/api/v1/password/forgot`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value }),
