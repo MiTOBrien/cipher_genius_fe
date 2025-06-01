@@ -14,7 +14,7 @@ const submit = async () => {
     const response = await fetch(`${API_BASE_URL}/password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value }),
+      body: JSON.stringify({ user: { email: email.value }}),
     })
 
     const data = await response.json()
