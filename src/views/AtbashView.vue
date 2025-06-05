@@ -45,6 +45,12 @@ const startGame = async () => {
   console.log('Set isTimerRunning to:', isTimerRunning.value)
 }
 
+const giveUp = () => {
+  result.value = 'gave-up'
+  isTimerRunning.value = false
+  // submitGameResult will be called by the watcher
+}
+
 function encryptText() {
   const original = quoteToEncrypt.value.quote
   const splitWordsAndSpaces = original.split(/(\s+)/) // keeps spaces
@@ -165,7 +171,7 @@ watch(
 )
 
 watch(result, (newVal) => {
-  if (newVal === 'correct' || newVal === 'incorrect') {
+  if (newVal === 'correct' || newVal === 'incorrect' || newVal === 'gave-up') {
     isTimerRunning.value = false
     submitGameResult()
   }
@@ -222,13 +228,21 @@ watch(result, (newVal) => {
     <div v-if="result === 'correct'" class="result correct">{{ VICTORY_MESSAGE }}</div>
     <div v-else-if="result === 'incorrect'" class="result incorrect">
       {{ DEFEAT_MESSAGE }}
-      <p>The quote was {{ quoteText }}</p>
+      <p>The quote was: {{ quoteText }}</p>
+    </div>
+    <div v-else-if="result === 'gave-up'" class="result gave-up">
+      You gave up! The quote was: {{ quoteText }}
     </div>
   </section>
 
   <section class="wrapper">
-    <!-- Start Button -->
-    <button @click="startGame">Start</button>
+    <!-- Dynamic Start/Give Up Button -->
+    <button v-if="encryptedText.length === 0 || result !== null" @click="startGame">
+      Start
+    </button>
+    <button v-else @click="giveUp" class="give-up-btn">
+      Give Up
+    </button>
   </section>
 </template>
 
@@ -246,6 +260,11 @@ button {
   font-size: 1.25rem;
   color: #01bfff;
   background-color: #241822;
+}
+
+.give-up-btn {
+  color: #ff9800;
+  border: 2px solid #ff9800;
 }
 
 .wrapper {
@@ -294,5 +313,8 @@ button {
 }
 .incorrect {
   color: #d50000;
+}
+.gave-up {
+  color: #ff9800;
 }
 </style>
